@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
@@ -13,12 +14,18 @@ public class Main {
 
 
     public static void main(String[] args) {
+        welcomeScreen();
         mainMenu();
+    }
+
+    public static void welcomeScreen() {
+        System.out.println("Welcome to LockedMe");
+        System.out.println("Developer: Shadman Ahmed");
+        System.out.println("------------------");
     }
 
 
     public static void mainMenu() {
-        System.out.println("Welcome to LockedMe");
         System.out.println("What would you like to do?");
         System.out.printf("1. See all files"+ "%n" + "2. Manipulate files" + "%n" + "3. Exit Application" + "%n");
         String mainMenuSelection = scanner.nextLine();
@@ -46,13 +53,20 @@ public class Main {
         String operationsSelection = scanner.nextLine();
         switch (operationsSelection) {
             case "1":
-                addFile();
+                System.out.println("Please provide a file path");
+                String addFilePath = scanner.nextLine();
+                addFile(addFilePath);
                 break;
             case "2":
-                deleteFile();
+                System.out.println("please enter file name");
+                String deleteFileName = scanner.nextLine();
+                deleteFile(deleteFileName);
                 break;
             case "3":
-                searchFiles();
+                System.out.println("please enter file name");
+                String searchFileName = scanner.nextLine();
+                searchFiles(searchFileName);
+                break;
             case "4":
                 mainMenu();
                 break;
@@ -64,9 +78,7 @@ public class Main {
 
     }
 
-    public static void showFiles()  {
-        System.out.println("Showing files in ascending order:");
-
+    public static Set<String> getFiles() {
         File[] files = new File(FOLDER).listFiles();
 
         Set<String> sorted = new TreeSet<>();
@@ -74,15 +86,17 @@ public class Main {
         for (File file: files) {
             sorted.add(file.getName());
         }
-        sorted.forEach(System.out::println);
+        return (sorted);
+    }
+
+    public static void showFiles()  {
+        System.out.println("Showing files in ascending order:");
+        getFiles().forEach(System.out::println);
         System.out.println("------------------");
         mainMenu();
     }
 
-    public static void addFile() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Please provide a file path");
-        String filePath = scanner.nextLine();
+    public static void addFile(String filePath) {
         Path path = Paths.get(filePath);
 
         if (!Files.exists(path)) {
@@ -104,28 +118,37 @@ public class Main {
         operationsMenu();
     }
 
-    public static void deleteFile() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("please enter file name");
-        String fileName = scanner.next();
+    public static boolean[] searchLogic(String fileName) {
+        final boolean[] exists = {false};
+
+        getFiles().forEach((x) -> {
+            if (x.toLowerCase(Locale.ROOT).equals(fileName.toLowerCase(Locale.ROOT))) {
+                exists[0] = true;
+            }
+        });
+        return (exists);
+    }
+
+    public static void deleteFile(String fileName) {
+        final boolean[] exists = searchLogic(fileName);
+
         File file = new File(FOLDER + fileName );
-        if (file.delete()) {
-            System.out.println("File Deleted " + file.getName());
+
+        if (exists[0]) {
+            file.delete();
+            System.out.println("File Deleted " +fileName);
         } else {
-            System.out.println("File not found.");
+            System.out.println(fileName + " doesn't exist");
         }
         operationsMenu();
     }
 
-    public static void searchFiles() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("please enter file name");
-        String fileName = scanner.next();
-        File file = new File(FOLDER + fileName );
-        if (file.exists()) {
-            System.out.println("File Found " + file.getAbsolutePath());
+    public static void searchFiles(String fileName) {
+        final boolean[] exists = searchLogic(fileName);
+        if (exists[0]) {
+            System.out.println(fileName + " exists");
         } else {
-            System.out.println("File not found.");
+            System.out.println(fileName + " doesn't exist");
         }
         operationsMenu();
     }
