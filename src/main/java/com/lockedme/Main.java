@@ -1,3 +1,5 @@
+package com.lockedme;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -77,6 +79,7 @@ public class Main {
         }
 
     }
+
 
     public static Set<String> getFiles() {
         File[] files = new File(FOLDER).listFiles();
