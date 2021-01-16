@@ -60,12 +60,12 @@ public class Main {
                 addFile(addFilePath);
                 break;
             case "2":
-                System.out.println("please enter file name");
+                System.out.println("Please enter file name");
                 String deleteFileName = scanner.nextLine();
                 deleteFile(deleteFileName);
                 break;
             case "3":
-                System.out.println("please enter file name");
+                System.out.println("Please enter file name");
                 String searchFileName = scanner.nextLine();
                 searchFiles(searchFileName);
                 break;
